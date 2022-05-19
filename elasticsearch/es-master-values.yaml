@@ -145,7 +145,7 @@ persistence:
   enabled: true
   labels:
     # Add default labels for the volumeClaimTemplate of the StatefulSet
-    enabled: false
+    enabled: true
   annotations: {}
 
 extraVolumes:
@@ -208,7 +208,7 @@ service:
   # Consider that all endpoints are considered "ready" even if the Pods themselves are not
   # https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec
   publishNotReadyAddresses: false
-  nodePort: "10342"
+  nodePort: ""
   annotations: {}
   httpPortName: http
   transportPortName: transport
