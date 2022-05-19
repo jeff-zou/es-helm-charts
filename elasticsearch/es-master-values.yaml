@@ -24,7 +24,7 @@ clusterDeprecationIndexing: "false"
 
 # Allows you to add any config files in /usr/share/elasticsearch/config/
 # such as elasticsearch.yml and log4j2.properties
-esConfig: {}
+esConfig: 
   elasticsearch.yml: |
     xpack.security.enabled: true
     xpack.security.transport.ssl.enabled: true
@@ -44,14 +44,14 @@ esJvmOptions: {}
 extraEnvs:
   - name: ELASTIC_USERNAME
     valueFrom:
-    secretKeyRef:
-     name: elastic-credentials
-     key: username
+      secretKeyRef:
+        name: elastic-credentials
+        key: username
   - name: ELASTIC_PASSWORD
     valueFrom:
-    secretKeyRef:
-     name: elastic-credentials
-     key: password
+      secretKeyRef:
+        name: elastic-credentials
+        key: password
 #  - name: MY_ENVIRONMENT_VAR
 #    value: the_value_goes_here
 

@@ -11,14 +11,14 @@ extraEnvs:
     value: "--max-old-space-size=1800"
   - name: ELASTIC_USERNAME
     valueFrom:
-    secretKeyRef:
-     name: elastic-credentials
-     key: username
+      secretKeyRef:
+        name: elastic-credentials
+        key: username
   - name: ELASTIC_PASSWORD
     valueFrom:
-    secretKeyRef:
-     name: elastic-credentials
-     key: password    
+      secretKeyRef:
+        name: elastic-credentials
+        key: password
 #  - name: MY_ENVIRONMENT_VAR
 #    value: the_value_goes_here
 
@@ -32,7 +32,11 @@ envFrom: []
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
 # the X-Pack license
-secretMounts: []
+secretMounts: 
+  - name: elastic-certificates
+    secretName: elastic-certificates
+    path: /usr/share/elasticsearch/config/certs
+    defaultMode: 0755
 #  - name: kibana-keystore
 #    secretName: kibana-keystore
 #    path: /usr/share/kibana/data/kibana.keystore
@@ -72,10 +76,11 @@ healthCheckPath: "/app/kibana"
 
 # Allows you to add any config files in /usr/share/kibana/config/
 # such as kibana.yml
-kibanaConfig: {}
-#   kibana.yml: |
-#     key:
-#       nestedkey: value
+kibanaConfig: 
+   kibana.yml: |
+     elasticsearch.username: elastic
+     elasticsearch.password: ***
+      
 
 # If Pod Security Policy in use it may be required to specify security context as well as service account
 

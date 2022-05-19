@@ -25,17 +25,19 @@ kubectl create secret generic elastic-credentials \
 helm repo add  elastic  https://helm.elastic.co
 helm repo update
 
-# 安装 ElasticSearch Master 节点
-helm install elasticsearch-master -f elasticsearch/es-master-values.yaml --version 7.13.3 elastic/elasticsearch
 
 # 安装 ElasticSearch Data 节点
-helm install elasticsearch-data -f elasticsearch/es-data-values.yaml --version 7.13.3 elastic/elasticsearch
+helm install elasticsearch-data -f elasticsearch/es-data-values.yaml --version 7.13.3 elasticsearch
+
+# 安装 ElasticSearch Master 节点
+helm install elasticsearch-master -f elasticsearch/es-master-values.yaml --version 7.13.3 elasticsearch
+
 
 # 安装 ElasticSearch Client 节点
-helm install elasticsearch-client -f elasticsearch/es-client-values.yaml --version 7.13.3 elastic/elasticsearch   
+helm install elasticsearch-client -f elasticsearch/es-client-values.yaml --version 7.13.3 elasticsearch   
 
 
-helm install kibana -f kibana/es-kibana-values.yaml --version 7.13.3 elastic/kibana
+helm install kibana -f kibana/es-kibana-values.yaml --version 7.13.3 kibana
   
   
 
