@@ -10,10 +10,10 @@ masterService: ""
 # These will be set as environment variables. E.g. node.master=true
 roles:
   master: "true"
-  ingest: "true"
-  data: "true"
-  remote_cluster_client: "true"
-  ml: "true"
+  ingest: "false"
+  data: "false"
+  remote_cluster_client: "false"
+  ml: "false"
 
 replicas: 3
 minimumMasterNodes: 2
@@ -25,9 +25,12 @@ clusterDeprecationIndexing: "false"
 # Allows you to add any config files in /usr/share/elasticsearch/config/
 # such as elasticsearch.yml and log4j2.properties
 esConfig: {}
-#  elasticsearch.yml: |
-#    key:
-#      nestedkey: value
+  elasticsearch.yml: |
+    xpack.security.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.verification_mode: certificate
+    xpack.security.transport.ssl.keystore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
+    xpack.security.transport.ssl.truststore.path: /usr/share/elasticsearch/config/certs/elastic-certificates.p12
 #  log4j2.properties: |
 #    key = value
 
@@ -38,7 +41,17 @@ esJvmOptions: {}
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
-extraEnvs: []
+extraEnvs:
+  - name: ELASTIC_USERNAME
+    valueFrom:
+    secretKeyRef:
+     name: elastic-credentials
+     key: username
+  - name: ELASTIC_PASSWORD
+    valueFrom:
+    secretKeyRef:
+     name: elastic-credentials
+     key: password
 #  - name: MY_ENVIRONMENT_VAR
 #    value: the_value_goes_here
 
@@ -52,11 +65,11 @@ envFrom: []
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
 # the X-Pack license
-secretMounts: []
-#  - name: elastic-certificates
-#    secretName: elastic-certificates
-#    path: /usr/share/elasticsearch/config/certs
-#    defaultMode: 0755
+secretMounts: 
+  - name: elastic-certificates
+    secretName: elastic-certificates
+    path: /usr/share/elasticsearch/config/certs
+    defaultMode: 0755
 
 hostAliases: []
 #- ip: "127.0.0.1"
@@ -75,7 +88,7 @@ podAnnotations:
 # additionals labels
 labels: {}
 
-esJavaOpts: "" # example: "-Xmx1g -Xms1g"
+esJavaOpts: "-Xmx1g -Xms1g" # example: "-Xmx1g -Xms1g"
 
 resources:
   requests:
@@ -97,10 +110,11 @@ initResources:
 networkHost: "0.0.0.0"
 
 volumeClaimTemplate:
+  storageClassName: cephfs
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 100Gi
+      storage: 5Gi
 
 rbac:
   create: false
@@ -194,7 +208,7 @@ service:
   # Consider that all endpoints are considered "ready" even if the Pods themselves are not
   # https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec
   publishNotReadyAddresses: false
-  nodePort: ""
+  nodePort: "10342"
   annotations: {}
   httpPortName: http
   transportPortName: transport
