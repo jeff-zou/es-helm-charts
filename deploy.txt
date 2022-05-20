@@ -39,6 +39,6 @@ helm install elasticsearch-client -f elasticsearch/es-client-values.yaml --versi
 
 helm install kibana -f kibana/es-kibana-values.yaml --version 7.13.3 kibana
   
-  
+helm install logstash -f logstash/es-logstash-values.yaml --version 7.13.3 logstash
 
 	
