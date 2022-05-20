@@ -88,13 +88,13 @@ podAnnotations:
 # additionals labels
 labels: {}
 
-esJavaOpts: "-Xmx1g -Xms1g" # example: "-Xmx1g -Xms1g"
+esJavaOpts: "-XX:+UseContainerSupport -XX:InitialRAMPercentage=85 -XX:MaxRAMPercentage=85" # example: "-Xmx1g -Xms1g"
 
 resources:
-  requests:
-    cpu: "1000m"
-    memory: "2Gi"
   limits:
+    cpu: "10000m"
+    memory: "15Gi"
+  requests:
     cpu: "1000m"
     memory: "2Gi"
 
