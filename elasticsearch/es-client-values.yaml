@@ -4,13 +4,13 @@ nodeGroup: "client"
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
-masterService: ""
+masterService: "elasticsearch-master"
 
 # Elasticsearch roles that will be applied to this nodeGroup
 # These will be set as environment variables. E.g. node.master=true
 roles:
   master: "false"
-  ingest: "false"
+  ingest: "true"
   data: "false"
   remote_cluster_client: "true"
   ml: "false"
@@ -95,7 +95,7 @@ resources:
     memory: "1Gi"
   limits:
     cpu: "1000m"
-    memory: "2Gi"
+    memory: "16Gi"
 
 initResources:
   {}

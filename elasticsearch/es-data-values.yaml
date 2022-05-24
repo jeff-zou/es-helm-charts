@@ -4,13 +4,13 @@ nodeGroup: "data"
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
-masterService: ""
+masterService: "elasticsearch-master"
 
 # Elasticsearch roles that will be applied to this nodeGroup
 # These will be set as environment variables. E.g. node.master=true
 roles:
   master: "false"
-  ingest: "true"
+  ingest: "false"
   data: "true"
   remote_cluster_client: "false"
   ml: "false"
@@ -93,7 +93,7 @@ esJavaOpts: "-XX:+UseContainerSupport -XX:InitialRAMPercentage=85 -XX:MaxRAMPerc
 resources:
   limits:
     cpu: "10000m"
-    memory: "15Gi"
+    memory: "8Gi"
   requests:
     cpu: "1000m"
     memory: "2Gi"
