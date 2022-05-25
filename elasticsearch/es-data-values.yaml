@@ -88,12 +88,12 @@ podAnnotations:
 # additionals labels
 labels: {}
 
-esJavaOpts: "-XX:+UseContainerSupport -XX:InitialRAMPercentage=85 -XX:MaxRAMPercentage=85" # example: "-Xmx1g -Xms1g"
+esJavaOpts: "-XX:+UseContainerSupport -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=50" # example: "-Xmx1g -Xms1g"
 
 resources:
   limits:
     cpu: "10000m"
-    memory: "8Gi"
+    memory: "32Gi"
   requests:
     cpu: "1000m"
     memory: "2Gi"
@@ -114,7 +114,7 @@ volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 100Gi
+      storage: 200Gi
 
 rbac:
   create: false
@@ -169,17 +169,26 @@ extraContainers:
   #   command: ['do', 'something']
 
 extraInitContainers:
-  []
+#  []
 #  - name: fix-permissions
 #    image: busybox
 #    command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/data']
 #    imagePullPolicy: Always
 #    securityContext:
 #      privileged: true
+#      runAsUser: 1000
 #    volumeMounts:
 #      - mountPath: /usr/share/elasticsearch/data
 #        name: elasticsearch-data
-    
+  - name: init-scheduler
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/data /usr/share/elasticsearch']
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: elasticsearch-data
+        mountPath: /usr/share/elasticsearch/data
 
 # This is the PriorityClass settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass

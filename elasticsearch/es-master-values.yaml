@@ -166,10 +166,19 @@ extraContainers:
   #   command: ['do', 'something']
 
 extraInitContainers:
-  []
+#  []
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+  - name: init-scheduler
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/data /usr/share/elasticsearch']
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: elasticsearch-master
+        mountPath: /usr/share/elasticsearch/data
 
 # This is the PriorityClass settings as defined in
 # https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
