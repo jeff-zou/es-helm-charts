@@ -1,5 +1,5 @@
 ---
-replicas: 2
+replicas: 1
 
 # Allows you to add any config files in /usr/share/logstash/config/
 # such as logstash.yml and log4j2.properties
@@ -10,6 +10,8 @@ logstashConfig:
   logstash.yml: |
     http.host: "0.0.0.0"
     xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch-master:9200" ]
+    xpack.monitoring.elasticsearch.username: elastic
+    xpack.monitoring.elasticsearch.password: *****
     #xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch-master-headless:9200" ]
 #  log4j2.properties: |
 #    key = value
@@ -20,20 +22,20 @@ logstashPipeline:
   logstash.conf: |
     input {
       kafka {
-        bootstrap_servers => ["kafka1.***.com:9092,kafka2.***.com:9092,kafka3.***.com:9092,kafka4.***.com:9092"]
+        bootstrap_servers => ["*****.com:9092"]
         group_id => "k8s_es"
         topics => ["app_log"]
         codec => json
-        sasl_jaas_config => "org.apache.kafka.common.security.plain.PlainLoginModule required username='kafkaconfleunt8' password='***';"
+        sasl_jaas_config => "org.apache.kafka.common.security.plain.PlainLoginModule required username='kafkaconfleunt8' password='*****';"
         sasl_mechanism => "PLAIN"
         security_protocol => "SASL_PLAINTEXT"
       }
     }
     output { 
       elasticsearch  {
-        hosts => "http://elasticsearch-master:9200"
+        hosts => "http://elasticsearch-client:9200"
         user =>"elastic"
-        password =>"elaSEE%*F6"
+        password =>"*****"
         index => "app_log"
       } 
     }
@@ -47,9 +49,17 @@ logstashPattern: {}
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
-extraEnvs: []
-#  - name: MY_ENVIRONMENT_VAR
-#    value: the_value_goes_here
+extraEnvs:
+  - name: ELASTIC_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: username
+  - name: ELASTIC_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: password
 
 # Allows you to load environment variables from kubernetes secret or config map
 envFrom: []
@@ -75,21 +85,25 @@ secrets: []
 #      cert.key.filepath: "secrets.crt" # The path to file should be relative to the `values.yaml` file.
 
 # A list of secrets and their paths to mount inside the pod
-secretMounts: []
+secretMounts:
+  - name: elastic-certificates
+    secretName: elastic-certificates
+    path: /usr/share/elasticsearch/config/certs
+    defaultMode: 0755
 
 hostAliases:
   - ip: "172.18.2.39"
     hostnames:
-      - "kafka1.***.com"
+      - "*****.com"
   - ip: "172.18.2.40"
     hostnames:
-      - "kafka2.***.com"
+      - "kafka2.seasungame.com"
   - ip: "172.18.2.41"
     hostnames:
-      - "kafka3.***.com"
+      - "kafka3.seasungame.com"
   - ip: "172.18.2.70"
     hostnames:
-      - "kafka4.***.com"
+      - "kafka4.seasungame.com"
 #- ip: "127.0.0.1"
 #  hostnames:
 #  - "foo.local"
@@ -109,11 +123,11 @@ logstashJavaOpts: "-XX:+UseContainerSupport -XX:InitialRAMPercentage=85 -XX:MaxR
 
 resources:
   requests:
-    cpu: "100m"
+    cpu: "500m"
     memory: "1536Mi"
   limits:
-    cpu: "1000m"
-    memory: "1536Mi"
+    cpu: "4000m"
+    memory: "4096Mi"
 
 volumeClaimTemplate:
   #storageClassName: cephfs
@@ -308,7 +322,7 @@ ingress:
   className: "nginx"
   pathtype: ImplementationSpecific
   hosts:
-    - host: dc-logstash.***.com
+    - host: test.com
       paths:
         - path: /beats
           servicePort: 5044
