@@ -27,18 +27,18 @@ helm repo update
 
 
 # 安装 ElasticSearch Data 节点
-helm install elasticsearch-data -f elasticsearch/es-data-values.yaml --version 7.13.3 elasticsearch
+helm install elasticsearch-data -f elasticsearch/es-data-values.yaml --version 7.17.3 elasticsearch
 
 # 安装 ElasticSearch Master 节点
-helm install elasticsearch-master -f elasticsearch/es-master-values.yaml --version 7.13.3 elasticsearch
+helm install elasticsearch-master -f elasticsearch/es-master-values.yaml --version 7.17.3 elasticsearch
 
 
 # 安装 ElasticSearch Client 节点
-helm install elasticsearch-client -f elasticsearch/es-client-values.yaml --version 7.13.3 elasticsearch   
+helm install elasticsearch-client -f elasticsearch/es-client-values.yaml --version 7.17.3 elasticsearch   
 
 
-helm install kibana -f kibana/es-kibana-values.yaml --version 7.13.3 kibana
+helm install kibana -f kibana/es-kibana-values.yaml --version 7.17.3 kibana
   
-helm install logstash -f logstash/es-logstash-values.yaml --version 7.13.3 logstash
+helm install logstash -f logstash/es-logstash-values.yaml --version 7.17.3 logstash
 
 	
