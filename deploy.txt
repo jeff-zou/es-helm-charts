@@ -41,4 +41,6 @@ helm install kibana -f kibana/es-kibana-values.yaml --version 7.17.3 kibana
   
 helm install logstash -f logstash/es-logstash-values.yaml --version 7.17.3 logstash
 
+helm install logstash-localdata -f logstash/es-logstash-localdata-values.yaml --version 7.17.3 logstash
+
 	
